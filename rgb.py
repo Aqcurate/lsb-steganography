@@ -4,7 +4,7 @@ from PIL import Image
 
 def main(imageName):
 
-    numb = int(input("Input number of bits"))
+    numb = int(input("Input number of bits: "))
     im = Image.open(imageName)
     pixel = im.load()
     array = []
@@ -47,23 +47,6 @@ def lsb(a1,b1,c1,numb):
         a2 = len(a1)
         b2 = len(b1)
         c2 = len(c1)
-
-
-
-
-
- # if len(a1) == 1:
-  #      a1 = ("0000000"+ a1)
-   # else:
-    #    a1 = ("000000"+ a1)
-   # if len(b1) == 1:
-   #     b1 = ("0000000"+ b1)
-   # else:
-   #     b1 = ("000000"+ b1)
-   # if len(c1) == 1:
-   #     c1 = ("0000000"+ c1)
-   # else:
-   #     c1 =  ("000000"+c1)
 
     return (a1,b1,c1)
 
