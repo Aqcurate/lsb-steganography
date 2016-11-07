@@ -20,14 +20,14 @@ bits.
 ## Usage
 
 ##### Encoding:
-    ###### Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
+        Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
 
-    ###### Notes: The images need to have a file extension [.jpg/.png].
-           The images should be the same dimensions.
-           (The program only takes the overlapping dimensions.)
+        Notes: The images need to have a file extension [.jpg/.png].
+               The images should be the same dimensions.
+               (The program only takes the overlapping dimensions.)
 
 ##### Decoding:
-    ###### Usage: steglsb -d [encoded_image] [output_image_name]
+        Usage: steglsb -d [encoded_image] [output_image_name]
 
-    ###### Notes: The images need to have a file extension [.jpg/.png].
+        Notes: The images need to have a file extension [.jpg/.png].
 
