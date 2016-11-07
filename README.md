@@ -15,19 +15,19 @@ Each mode of steglsb [-d/-e] asks the user for a number of bits.
 This number of bits corresponds to the amount of least significant
 bits.
 
-    EX: If the user enters a LSB of 3 the LSB of 11011010 is 010.
+EX: If the user enters a LSB of 3 the LSB of 11011010 is 010.
 
 ## Usage
 
 ##### Encoding:
-        Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
+Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
 
-        Notes: The images need to have a file extension [.jpg/.png].
-               The images should be the same dimensions.
-               (The program only takes the overlapping dimensions.)
+Notes: The images need to have a file extension [.jpg/.png].
+       The images should be the same dimensions.
+       (The program only takes the overlapping dimensions.)
 
 ##### Decoding:
-        Usage: steglsb -d [encoded_image] [output_image_name]
+Usage: steglsb -d [encoded_image] [output_image_name]
 
-        Notes: The images need to have a file extension [.jpg/.png].
+Notes: The images need to have a file extension [.jpg/.png].
 
