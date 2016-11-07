@@ -1,18 +1,19 @@
 #!/usr/bin/python3
+
 # -*= coding: utf-8 -*-
 # @author: Andrew Quach and Stanislav Lyakhov
 # @website: http://sstctf.org
-# @version: 1.0.1 
+# @version: 1.0.1
 #
 # Basic LSB Encoder / Decoder
 #
-# TODO: Comments, help flag, check for file extensions in sysv args, resizing
+# TODO: Comments, help flag, check for file extensions in sysv argv, resizing
 
 import sys
 from PIL import Image, ImageMath
 
 def get_image_data(image_name):
-    image = Image.open(image_name) 
+    image = Image.open(image_name)
     red, green, blue, *alpha = image.split()
     return (red, green, blue)
 
@@ -37,18 +38,18 @@ def reassemble_image(rgb):
     return reassembled_image
 
 def encode(cover, secret, output):
-    bits = get_number_bits() 
+    bits = get_number_bits()
 
     cover_rgb = get_image_data(cover)
     secret_rgb = get_image_data(secret)
-    
+
     encoded_rgb = encode_data(cover_rgb, secret_rgb, bits)
     encoded_image = reassemble_image(encoded_rgb)
 
     encoded_image.save(output)
 
 def decode(encoded, output):
-    bits = get_number_bits() 
+    bits = get_number_bits()
 
     rgb = get_image_data(encoded)
     decoded_rgb = decode_data(rgb, bits)
@@ -78,15 +79,44 @@ steglsb -e [cover_image] [secret_image] [output_image_name]
 Decoding:
 steglsb -d [encoded_image] [output_image_name]
 
+Help:
+steglsb -h
+
 Valid File Formats:
 JPG, PNG
     """)
+
+def help():
+    print("""
+Steglsb allows for two functions - encoding and decoding.
+
+Encoding:
+    Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
+
+    Notes: The images need to have a file extension [.jpg/.png].
+           The images should be the same dimensions.
+           (The program only takes the overlapping dimensions.)
+
+Decoding:
+    Usage: steglsb -d [encoded_image] [output_image_name]
+
+    Notes: The images need to have a file extension [.jpg/.png].
+
+
+Each mode of steglsb [-d/-e] asks the user for a number of bits.
+This number of bits corresponds to the amount of least significant
+bits.
+
+    EX: If the user enters a LSB of 3 the LSB of 11011010 is 010.
+          """)
 
 def main():
     if len(sys.argv) == 5 and sys.argv[1] == '-e':
         encode(sys.argv[2], sys.argv[3], sys.argv[4])
     elif len(sys.argv) == 4 and sys.argv[1] == '-d':
         decode(sys.argv[2], sys.argv[3])
+    elif len(sys.argv) > 1 and sys.argv[1]=='-h' :
+        help()
     else:
         usage()
 
