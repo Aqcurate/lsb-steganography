@@ -25,9 +25,7 @@ bits.
     Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
 
     Notes: The images need to have a file extension [.jpg/.png].
-           The images should be the same dimensions.
-           (The program only takes the overlapping dimensions.)
-
+           The cover image should be larger than the secret image.
     
 ##### Decoding:
     Usage: steglsb -d [encoded_image] [output_image_name]
