@@ -3,17 +3,22 @@
 # -*= coding: utf-8 -*-
 # @author: Andrew Quach and Stanislav Lyakhov
 # @website: http://sstctf.org
-# @version: 1.0.1
+# @version: 1.0.3
 #
 # Basic LSB Encoder / Decoder
 #
-# TODO: Comments, help flag, check for file extensions in sysv argv, resizing
+# TODO: Comments
 
 import sys
 from PIL import Image, ImageMath
 
 def get_image_data(image_name):
-    image = Image.open(image_name)
+    try:
+        image = Image.open(image_name)
+    except IOError:
+        print("Error processing images. Please check to see valid images was provided.")
+        sys.exit()
+
     red, green, blue, *alpha = image.split()
     return (red, green, blue)
 
@@ -45,8 +50,10 @@ def encode(cover, secret, output):
 
     encoded_rgb = encode_data(cover_rgb, secret_rgb, bits)
     encoded_image = reassemble_image(encoded_rgb)
+    original_image = reassemble_image(cover_rgb)
 
-    encoded_image.save(output)
+    original_image.paste(encoded_image, (0,0))
+    original_image.save(output)
 
 def decode(encoded, output):
     bits = get_number_bits()
@@ -68,6 +75,12 @@ def get_number_bits():
             return bits
         else:
             print("Please enter a number between 0-8")
+            sys.exit()
+
+def check_extension(argv):
+    for args in argv[2:]:
+        if not args.lower().endswith(('.png','.jpg')):
+            print("Error processing image names. Please check to see valid extensions were provided.")
             sys.exit()
 
 def usage():
@@ -107,15 +120,17 @@ Each mode of steglsb [-d/-e] asks the user for a number of bits.
 This number of bits corresponds to the amount of least significant
 bits.
 
-    EX: If the user enters a LSB of 3 the LSB of 11011010 is 010.
+    EX: If the user enters '# of bits' as 3, the LSB of 11011010 is 010.
           """)
 
 def main():
+    check_extension(sys.argv)
+
     if len(sys.argv) == 5 and sys.argv[1] == '-e':
         encode(sys.argv[2], sys.argv[3], sys.argv[4])
     elif len(sys.argv) == 4 and sys.argv[1] == '-d':
         decode(sys.argv[2], sys.argv[3])
-    elif len(sys.argv) > 1 and sys.argv[1]=='-h' :
+    elif len(sys.argv) > 1 and sys.argv[1]=='-h':
         help()
     else:
         usage()
