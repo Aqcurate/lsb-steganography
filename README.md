@@ -1,6 +1,7 @@
 # Least Significant Bit Steganography
 
-**Version:** 1.0.2
+**Version:** 1.0.3
+
 **Authors:** Andrew Quach and Stanislav Lyakhov
 
 *All rights reserved.*
@@ -15,7 +16,7 @@ Each mode of steglsb [-d/-e] asks the user for a number of bits.
 This number of bits corresponds to the amount of least significant
 bits.
 
-    EX: If the user enters a LSB of 3 the LSB of 11011010 is 010.
+    EX: If the user enters '# of bits' as 3, the LSB of 11011010 is 010.
 
 ## Usage
 
@@ -31,3 +32,11 @@ bits.
 
     Notes: The images need to have a file extension [.jpg/.png].
 
+## Dependencies
+
+This program depends on Python3 Pillow.
+
+##### Installation Using Pip:
+    sudo apt-get install python3-pip
+    sudo pip3 install Pillow
+    
