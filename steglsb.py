@@ -79,7 +79,7 @@ def get_number_bits():
 
 def check_extension(argv):
     for args in argv[2:]:
-        if not args.lower().endswith(('.png','.jpg')):
+        if not args.lower().endswith(('.png','.jpg','.jpeg')):
             print("Error processing image names. Please check to see valid extensions were provided.")
             sys.exit()
 
@@ -106,14 +106,14 @@ Steglsb allows for two functions - encoding and decoding.
 Encoding:
     Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
 
-    Notes: The images need to have a file extension [.jpg/.png].
+    Notes: The images need to have a file extension [.jpg/.jpeg/.png].
            The images should be the same dimensions.
            (The program only takes the overlapping dimensions.)
 
 Decoding:
     Usage: steglsb -d [encoded_image] [output_image_name]
 
-    Notes: The images need to have a file extension [.jpg/.png].
+    Notes: The images need to have a file extension [.jpg/.jpeg/.png].
 
 
 Each mode of steglsb [-d/-e] asks the user for a number of bits.

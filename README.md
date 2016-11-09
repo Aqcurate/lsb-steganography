@@ -24,28 +24,29 @@ bits.
 ##### Encoding:
     Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
 
-    Notes: The images need to have a file extension [.jpg/.png].
+    Notes: The images need to have a file extension [.jpg/.jpeg/.png].
            The cover image should be larger than the secret image.
     
 ##### Decoding:
     Usage: steglsb -d [encoded_image] [output_image_name]
 
-    Notes: The images need to have a file extension [.jpg/.png].
+    Notes: The images need to have a file extension [.jpg/.jpeg/.png].
 
 
-##### Examples:
-    Encoding example: The goal is to insert 'topsecret.jpg' into the image 'cover.png' located in the 'example' folder
-                      Type the following command: './steglsb -e example/cover.png example/topsecret.jpg output.png'
-                      The program will ask you to input the desired amount of Least Significant Bits, enter an integer between 1 and 8
-                      program will run and create the file 'output.png' which will look like 'cover.png' 
-                      It will have topsecret.jpg hidden inside of it.
+## Usage Examples:
+    Encoding Example: Insert 'secret.jpg' into the image 'cover.png' located in the 'example' folder
+                      Type the following command: './steglsb -e example/cover.png example/secret.jpg output.png'
+                      The program will ask you to input the desired amount of Least Significant Bits 
+                      Enter an integer between 1 and 8 (Recommended: 2)
+                      The program will run and create the file 'output.png'
+                      'output.png' will look like 'cover.png' but contain 'secret.jpg'
 
-    Decoding example: The goal is to find a secret image in sststeg.png (It is possible to reverse our previously created 'output.png' this way)
-                      Type the following command: './steglsb -d example/sststeg.png secret.png'
-                      The program will ask to input a desired amount of Least Sgnificant Bits.
-                      Enter an integer between 1 and 8 (Trial and error, different images use different amounts of LSB)
-                      The example image 'sststeg.png' is hidden in 2 LSB.
-                      The program will run, and a 'secret.png' file will be created in the main directory which will contain the secret image.
+    Decoding Example: There is a secret image in hidden.png
+                      Type the following command: './steglsb -d example/hidden.png secret.png'
+                      The program will ask to input a desired amount of Least Significant Bits
+                      Enter an integer between 1 and 8 (Recommended: 2)
+                      The secret image is hidden in the last 2 LSBs.
+                      A 'secret.png' file will be created containing the secret image.
 
 
 ## Dependencies
