@@ -1,7 +1,7 @@
 # Least Significant Bit Steganography
 
 
-**Version:** 1.0.3
+**Version:** 2.0.0 
 
 **Authors:** Andrew Quach and Stanislav Lyakhov
 

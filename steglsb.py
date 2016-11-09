@@ -3,7 +3,7 @@
 # -*= coding: utf-8 -*-
 # @author: Andrew Quach and Stanislav Lyakhov
 # @website: http://sstctf.org
-# @version: 1.0.3
+# @version: 2.0.0
 #
 # Basic LSB Encoder / Decoder
 #
