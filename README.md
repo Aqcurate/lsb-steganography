@@ -36,6 +36,7 @@ it also means a more visible secret.
 
     Notes: The cover image should be larger than the secret image.
            The mode defaults to the mode of the cover image.
+           CMYK LSB is not optimal. It is recommended to force CMYK to RGB. 
     
 ##### Decoding:
     Usage: steglsb.py -d steg_img bits outfile
