@@ -2,139 +2,116 @@
 
 # -*= coding: utf-8 -*-
 # @author: Andrew Quach and Stanislav Lyakhov
-# @website: http://sstctf.org
-# @version: 2.0.0
+# @version: 3.0.0
 #
 # Basic LSB Encoder / Decoder
-#
-# TODO: Comments
 
 import sys
 from PIL import Image, ImageMath
 
-def get_image_data(image_name):
-    try:
-        image = Image.open(image_name)
-    except IOError:
-        print("Error processing images. Please check to see valid images was provided.")
-        sys.exit()
-
-    red, green, blue, *alpha = image.split()
-    return (red, green, blue)
-
-def encode_data(cover_rgb, secret_rgb, bits):
-    encoded_rgb = []
-
-    for k in range(3):
-        encoded_rgb.append(ImageMath.eval("convert((cover_rgb & (256 - 2**bits)) + ((secret_rgb & (256 - 2**(8 - bits)) - 1) >> 8 - bits), 'L')", cover_rgb = cover_rgb[k], secret_rgb = secret_rgb[k], bits = bits))
-
-    return tuple(encoded_rgb)
-
-def decode_data(rgb, bits):
-    decoded_rgb = []
-
-    for k in range(3):
-        decoded_rgb.append(ImageMath.eval("convert((rgb & 2**bits - 1) << 8 - bits, 'L')", rgb = rgb[k], bits = bits))
-
-    return tuple(decoded_rgb)
-
-def reassemble_image(rgb):
-    reassembled_image = Image.merge("RGB", (rgb[0], rgb[1], rgb[2]))
-    return reassembled_image
-
-def encode(cover, secret, output):
-    bits = get_number_bits()
-
-    cover_rgb = get_image_data(cover)
-    secret_rgb = get_image_data(secret)
-
-    encoded_rgb = encode_data(cover_rgb, secret_rgb, bits)
-    encoded_image = reassemble_image(encoded_rgb)
-    original_image = reassemble_image(cover_rgb)
-
-    original_image.paste(encoded_image, (0,0))
-    original_image.save(output)
-
-def decode(encoded, output):
-    bits = get_number_bits()
-
-    rgb = get_image_data(encoded)
-    decoded_rgb = decode_data(rgb, bits)
-    decoded_image = reassemble_image(decoded_rgb)
-
-    decoded_image.save(output)
-
-def get_number_bits():
-    try:
-        bits = int(input('How many bits do you wish to use?\n> '))
-    except ValueError:
-        print("Please enter a number between 0-8")
-        sys.exit()
-    else:
-        if 0 <= bits <= 8:
-            return bits
-        else:
-            print("Please enter a number between 0-8")
+class LSB:
+    SUPPORTED = ['RGB', 'RGBA', 'L', 'CMYK']
+    def _set_bits(self, bits):
+        self.bits = int(bits)
+        if not 0 <= self.bits <= 8:
+            print('[!] Number of bits needs to be between 0-8.')
             sys.exit()
 
-def check_extension(argv):
-    for args in argv[2:]:
-        if not args.lower().endswith(('.png','.jpg','.jpeg')):
-            print("Error processing image names. Please check to see valid extensions were provided.")
+    def _get_image(self, path, itype):
+        try:
+            img = Image.open(path)
+        except IOError as e:
+            print('[!] {} image could not be opened.'.format(itype.title()))
+            print('[!] {}'.format(e))
             sys.exit()
 
+        print('[*] {} image mode: {}'.format(itype.title(), img.mode))
+        if img.mode not in self.SUPPORTED:
+            print('[!] Nonsupported image mode.')
+            sys.exit()
+        return img
+
+    def _save_img(self, img, outfile):
+        try:
+            img.save(outfile)
+        except IOError as e:
+            print('[!] {} image could not be written.'.format(outfile))
+            print('[!] {}'.format(e))
+            sys.exit()
+        except KeyError as e:
+            print('[!] Format unable to be determined by filename.'.format(outfile))
+            print('[!] {}'.format(e))
+
+class LSBEncode(LSB):
+    def __init__(self, cover, secret, bits, outfile, mode=None):
+        print('[*] Attempting LSB Encoding with bits = {}'.format(bits))
+        self._set_bits(bits)
+        self.outfile = outfile
+        self.cover = self._get_image(cover, 'cover')
+        if mode != None:
+            self.cover.convert(mode)
+            print('[*] Converted cover image mode to {}.'.format(self.cover.mode))
+        self.secret = self._get_image(secret, 'secret').convert(self.cover.mode)
+        print('[*] Converted secret image mode to {}.'.format(self.cover.mode))
+        self._encode_img()
+
+    def _encode_img(self):
+        c = self.cover.split()
+        s = self.secret.split()
+        expr = 'convert((c & (256 - 2**bits)) + ((s & (256 - 2**(8 - bits)) - 1) >> (8 - bits)), "L")'
+        out = [ImageMath.eval(expr, c = c[k], s = s[k], bits = self.bits) for k in range(len(c))]
+        out = Image.merge(self.cover.mode, out)
+        self.cover.paste(out, (0, 0))
+        self._save_img(self.cover, self.outfile)
+        print('[*] Created outfile at {}'.format(self.outfile))
+
+class LSBDecode(LSB):
+    def __init__(self, steg, bits, outfile):
+        print('[*] Attempting LSB Decoding with bits = {}'.format(bits))
+        self._set_bits(bits)
+        self.outfile = outfile
+        self.steg = self._get_image(steg, 'steg')
+        self._decode_img()
+
+    def _decode_img(self):
+        s = self.steg.split()
+        expr = 'convert((s & 2**bits - 1) << (8 - bits), "L")'
+        out = [ImageMath.eval(expr, s = s[k], bits = self.bits) for k in range(len(s))] 
+        out = Image.merge(self.steg.mode, out)
+        self._save_img(out, self.outfile)
+        print('[*] Created outfile at {}'.format(self.outfile))
+        
 def usage():
-    print("""
-Usage:
-Encoding:
-steglsb -e [cover_image] [secret_image] [output_image_name]
+    print('''Encoding Usage: steglsb -e cover_img secret_img bits outfile [mode]
 
-Decoding:
-steglsb -d [encoded_image] [output_image_name]
+> Embed a secret image into a cover image using LSB
 
-Help:
-steglsb -h
-
-Valid File Formats:
-JPG, PNG
-    """)
-
-def help():
-    print("""
-Steglsb allows for two functions - encoding and decoding.
-
-Encoding:
-    Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
-
-    Notes: The images need to have a file extension [.jpg/.jpeg/.png].
-           The images should be the same dimensions.
-           (The program only takes the overlapping dimensions.)
-
-Decoding:
-    Usage: steglsb -d [encoded_image] [output_image_name]
-
-    Notes: The images need to have a file extension [.jpg/.jpeg/.png].
+    Positional Arguments:
+        cover_img  - path to cover image
+        secret_img - path to secret image
+        bits       - number of rightmost bits to use (between 0-8)
+        outfile    - path to output file
+    Optional Arguments:
+        mode       - image mode to use 'RGB', 'RGBA', 'L', 'CMYK'
 
 
-Each mode of steglsb [-d/-e] asks the user for a number of bits.
-This number of bits corresponds to the amount of least significant
-bits.
+Decoding Usage: steglsb -d steg_img bits outfile
 
-    EX: If the user enters '# of bits' as 3, the LSB of 11011010 is 010.
-          """)
+> Extract a secret image from a steganographic image using LSB
+
+    Positional Arugments:
+        steg_img   - path to steg image
+        bits       - number of rightmost bits to use (between 0-8)
+        outfile    - path to output file
+    ''')
 
 def main():
-    check_extension(sys.argv)
-
-    if len(sys.argv) == 5 and sys.argv[1] == '-e':
-        encode(sys.argv[2], sys.argv[3], sys.argv[4])
-    elif len(sys.argv) == 4 and sys.argv[1] == '-d':
-        decode(sys.argv[2], sys.argv[3])
-    elif len(sys.argv) > 1 and sys.argv[1]=='-h':
-        help()
+    if len(sys.argv) in (6, 7) and sys.argv[1] == '-e':
+        LSBEncode(*sys.argv[2:])
+    elif len(sys.argv) == 5 and sys.argv[1] == '-d':
+        LSBDecode(*sys.argv[2:])
     else:
         usage()
 
 if __name__ == '__main__':
     main()
-
