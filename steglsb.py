@@ -38,9 +38,10 @@ class LSB:
             print('[!] {} image could not be written.'.format(outfile))
             print('[!] {}'.format(e))
             sys.exit()
-        except KeyError as e:
-            print('[!] Format unable to be determined by filename.'.format(outfile))
+        except Exception as e:
+            print('[!] Unable to save file.')
             print('[!] {}'.format(e))
+            sys.exit()
 
 class LSBEncode(LSB):
     def __init__(self, cover, secret, bits, outfile, mode=None):
