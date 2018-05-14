@@ -56,8 +56,6 @@ it also means a more visible secret.
 
     Decoding Example: There is a secret image in hidden.png
                       Type the following command: './steglsb.py -d example/hidden.png 2 secret.png'
-                      The program will ask to input a desired amount of Least Significant Bits
-                      Enter an integer between 1 and 8 (Recommended: 2)
                       The secret image is hidden in the last 2 LSBs.
                       A 'secret.png' file will be created containing the secret image.
 
