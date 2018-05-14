@@ -1,48 +1,60 @@
 # Least Significant Bit Steganography
 
-
-**Version:** 2.0.0 
+**Version:** 3.0.0 
 
 **Authors:** Andrew Quach and Stanislav Lyakhov
 
-*All rights reserved.*
-
 ## Introduction
 
-Steglsb allows for two functions - encoding and decoding.
-Encoding masks a secret image in a cover image using LSB.
-Decoding recovers a secret image from an encoded image using LSB.
+Steglsb has two functions: Stenographic LSB encoding and decoding.
+Encoding embeds a secret image in the last significant bits of a cover image.
+Decoding extracts a secret image from an steganographic image using LSB.
 
-Each mode of steglsb [-d/-e] asks the user for a number of bits.
-This number of bits corresponds to the amount of least significant
-bits.
+Each mode of steglsb [-d/-e] requires an argument detailing the number of bits.
+In other words, the number of rightmost bits of each pixel used in encoding
+and decoding.
 
-    EX: If the user enters '# of bits' as 3, the LSB of 11011010 is 010.
+    EX: If bits = 3, the LSB of 11011010 is 010.
+
+A larger number of bits specified means a higher steganographic capacity. However,
+it also means a more visible secret.
 
 ## Usage
 
 ##### Encoding:
-    Usage: steglsb -e [cover_image] [secret_image] [output_image_name]
+    Usage: steglsb.py -e cover_img secret_img bits outfile [mode]
 
-    Notes: The images need to have a file extension [.jpg/.jpeg/.png].
-           The cover image should be larger than the secret image.
+    > Embed a secret image into a cover image using LSB
+
+        Positional Arguments:
+            cover_img  - path to cover image
+            secret_img - path to secret image
+            bits       - number of rightmost bits to use (between 0-8)
+            outfile    - path to output file
+        Optional Arguments:
+            mode       - image mode to use 'RGB', 'RGBA', 'L', 'CMYK'
+
+    Notes: The cover image should be larger than the secret image.
+           The mode defaults to the mode of the cover image.
     
 ##### Decoding:
-    Usage: steglsb -d [encoded_image] [output_image_name]
+    Usage: steglsb.py -d steg_img bits outfile
 
-    Notes: The images need to have a file extension [.jpg/.jpeg/.png].
+    > Extract a secret image from a steganographic image using LSB
 
+        Positional Arugments:
+            steg_img   - path to steg image
+            bits       - number of rightmost bits to use (between 0-8)
+            outfile    - path to output file
 
 ## Usage Examples:
     Encoding Example: Insert 'secret.jpg' into the image 'cover.png' located in the 'example' folder
-                      Type the following command: './steglsb -e example/cover.png example/secret.jpg output.png'
-                      The program will ask you to input the desired amount of Least Significant Bits 
-                      Enter an integer between 1 and 8 (Recommended: 2)
+                      Type the following command: './steglsb.py -e example/cover.png example/secret.jpg 2 output.png'
                       The program will run and create the file 'output.png'
                       'output.png' will look like 'cover.png' but contain 'secret.jpg'
 
     Decoding Example: There is a secret image in hidden.png
-                      Type the following command: './steglsb -d example/hidden.png secret.png'
+                      Type the following command: './steglsb.py -d example/hidden.png 2 secret.png'
                       The program will ask to input a desired amount of Least Significant Bits
                       Enter an integer between 1 and 8 (Recommended: 2)
                       The secret image is hidden in the last 2 LSBs.
@@ -56,4 +68,3 @@ This program depends on Python3 Pillow.
 ##### Installation Using Pip:
     sudo apt-get install python3-pip
     sudo pip3 install Pillow
-    
