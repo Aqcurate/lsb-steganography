@@ -42,7 +42,7 @@ it also means a more visible secret.
 
     > Extract a secret image from a steganographic image using LSB
 
-        Positional Arugments:
+        Positional Arguments:
             steg_img   - path to steg image
             bits       - number of rightmost bits to use (between 0-8)
             outfile    - path to output file
