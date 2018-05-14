@@ -49,7 +49,7 @@ class LSBEncode(LSB):
         self.outfile = outfile
         self.cover = self._get_image(cover, 'cover')
         if mode != None:
-            self.cover.convert(mode)
+            self.cover = self.cover.convert(mode.upper())
             print('[*] Converted cover image mode to {}.'.format(self.cover.mode))
         self.secret = self._get_image(secret, 'secret').convert(self.cover.mode)
         print('[*] Converted secret image mode to {}.'.format(self.cover.mode))
