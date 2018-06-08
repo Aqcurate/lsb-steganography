@@ -1,6 +1,6 @@
 # Least Significant Bit Steganography
 
-**Version:** 3.0.0 
+**Version:** 3.1.0 
 
 **Authors:** Andrew Quach and Stanislav Lyakhov
 
@@ -62,8 +62,10 @@ it also means a more visible secret.
 
 ## Dependencies
 
-This program depends on Python3 Pillow.
+This program depends on Python3 Pillow and the GUI module depends on PyQt5.
 
 ##### Installation Using Pip:
     sudo apt-get install python3-pip
     sudo pip3 install Pillow
+    (optional):
+    sudo pip3 install pyqt5

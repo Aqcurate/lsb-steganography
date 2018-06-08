@@ -9,8 +9,10 @@
 import sys
 from PIL import Image, ImageMath
 
+
 class LSB:
     SUPPORTED = ['RGB', 'RGBA', 'L', 'CMYK']
+
     def _set_bits(self, bits):
         self.bits = int(bits)
         if not 0 <= self.bits <= 8:
@@ -43,6 +45,7 @@ class LSB:
             print('[!] {}'.format(e))
             sys.exit()
 
+
 class LSBEncode(LSB):
     def __init__(self, cover, secret, bits, outfile, mode=None):
         print('[*] Attempting LSB Encoding with bits = {}'.format(bits))
@@ -60,11 +63,12 @@ class LSBEncode(LSB):
         c = self.cover.split()
         s = self.secret.split()
         expr = 'convert((c & (256 - 2**bits)) + ((s & (256 - 2**(8 - bits)) - 1) >> (8 - bits)), "L")'
-        out = [ImageMath.eval(expr, c = c[k], s = s[k], bits = self.bits) for k in range(len(c))]
+        out = [ImageMath.eval(expr, c=c[k], s=s[k], bits=self.bits) for k in range(len(c))]
         out = Image.merge(self.cover.mode, out)
         self.cover.paste(out, (0, 0))
         self._save_img(self.cover, self.outfile)
         print('[*] Created outfile at {}'.format(self.outfile))
+
 
 class LSBDecode(LSB):
     def __init__(self, steg, bits, outfile):
@@ -77,11 +81,12 @@ class LSBDecode(LSB):
     def _decode_img(self):
         s = self.steg.split()
         expr = 'convert((s & 2**bits - 1) << (8 - bits), "L")'
-        out = [ImageMath.eval(expr, s = s[k], bits = self.bits) for k in range(len(s))] 
+        out = [ImageMath.eval(expr, s=s[k], bits=self.bits) for k in range(len(s))]
         out = Image.merge(self.steg.mode, out)
         self._save_img(out, self.outfile)
         print('[*] Created outfile at {}'.format(self.outfile))
-        
+
+
 def usage():
     print('''Encoding Usage: steglsb -e cover_img secret_img bits outfile [mode]
 
@@ -106,6 +111,7 @@ Decoding Usage: steglsb -d steg_img bits outfile
         outfile    - path to output file
     ''')
 
+
 def main():
     if len(sys.argv) in (6, 7) and sys.argv[1] == '-e':
         LSBEncode(*sys.argv[2:])
@@ -113,6 +119,7 @@ def main():
         LSBDecode(*sys.argv[2:])
     else:
         usage()
+
 
 if __name__ == '__main__':
     main()
