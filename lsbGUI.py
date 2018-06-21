@@ -53,43 +53,58 @@ class MainGUI(QWidget):
 
 
 class EncodeGUI(MainGUI, Encode_dialog):
+    TEMP = "tempe"
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.encode_cancel_btn.clicked.connect(self.exit)
         self.cover_img_btn.clicked.connect(self.get_cover)
         self.secret_img_btn.clicked.connect(self.get_secret)
-        self.encode_submit_btn.clicked.connect(self.encode_image)
+        self.encode_save_btn.clicked.connect(self.save_image)
         self.encode_cancel_btn.clicked.connect(self.exit)
+        self.encode_slider.valueChanged.connect(self.slide_bits)
         self.cover = self.secret = self.mime = None
 
     def _get_image(self, header="Select file"):
         return tuple(QFileDialog.getOpenFileName(self, header, QDir.homePath(), self.FILTER))
 
+    def _show_image(self, image, bits):
+        steglsb.LSBEncode(self.cover, self.secret, bits, self._get_filename(image))
+        view = QGraphicsScene()
+        pix = QPixmap(image)
+        view.addPixmap(pix)
+        self.encode_graphic.setScene(view)
+
     def get_cover(self):
         self.cover, file_mime = self._get_image("Select cover image")
         if self.cover:
             self.mime = self._parse_mime(file_mime)
+        self.slide_bits()
 
     def get_secret(self):
         self.secret, _ = self._get_image("Select secret image")
+        self.slide_bits()
 
-    def encode_image(self):
+    def slide_bits(self):
+        bits = self.encode_slider.value()
+        if self.secret and self.cover:
+            self._show_image(self._get_filename(self.TEMP), bits)
+
+    def save_image(self):
         if self.cover and self.secret:
-            file_path = QFileDialog.getSaveFileName(self, 'Select outfile', QDir.currentPath())[0]
+            file_path = QFileDialog.getSaveFileName(self, 'Select save location', QDir.currentPath())[0]
             if file_path:
-                steglsb.LSBEncode(self.cover, self.secret, self.encode_bits_spin.value(), self._get_filename(file_path))
-                self.exit()
+                copyfile(self._get_filename(self.TEMP), file_path)
 
 
 class DecodeGUI(MainGUI, Decode_dialog):
-    TEMP = "temp"
+    TEMP = "tempd"
 
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.decode_save_btn.clicked.connect(self.save_image)
-        self.decode_exit_btn.clicked.connect(self.exit)
+        self.decode_cancel_btn.clicked.connect(self.exit)
         self.decode_file_btn.clicked.connect(self.get_image)
         self.decode_slider.valueChanged.connect(self.slide_bits)
         self.file = self.mime = None

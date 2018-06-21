@@ -38,7 +38,7 @@
          <string>A simple LSB Steganography encoding/decoding tool developed by Andrew Quach and Stanislav Lyakhov.</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>

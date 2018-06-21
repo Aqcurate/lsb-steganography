@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>511</width>
-    <height>402</height>
+    <width>529</width>
+    <height>582</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,55 +24,17 @@
         </font>
        </property>
        <property name="text">
-        <string>Image encoding</string>
+        <string>Image Encoding</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignHCenter|Qt::AlignTop</set>
        </property>
       </widget>
      </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Select Number of bits (recommended 2):</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="encode_bits_spin">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>8</number>
-         </property>
-         <property name="value">
-          <number>2</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
     </layout>
    </item>
    <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
+    <widget class="QGraphicsView" name="encode_graphic"/>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -93,20 +55,33 @@
     </layout>
    </item>
    <item>
-    <spacer name="verticalSpacer">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Number of bits (1-8)</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QSlider" name="encode_slider">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>8</number>
+     </property>
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Minimum</enum>
+     <property name="tickPosition">
+      <enum>QSlider::TicksBelow</enum>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
+     <property name="tickInterval">
+      <number>1</number>
      </property>
-    </spacer>
+    </widget>
    </item>
    <item>
     <widget class="Line" name="line_2">
@@ -128,9 +103,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="encode_submit_btn">
+      <widget class="QPushButton" name="encode_save_btn">
        <property name="text">
-        <string>Encode</string>
+        <string>Save</string>
        </property>
       </widget>
      </item>
